@@ -9,7 +9,6 @@
       .server-list { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); max-width: 600px; }
       ul { list-style: none; padding: 0; }
       li { margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #eee; }
-      li:last-child { border-bottom: none; }
       .status-online { color: #2ecc71; font-weight: bold; }
       .status-offline { color: #e74c3c; font-weight: bold; }
       .player-count { font-size: 0.9em; color: #666; margin-left: 5px; }
@@ -22,16 +21,10 @@
         <ul>
           <li>
             <p><strong>vanilla.aclfx.fish</strong>: <span id="vanilla-status">Checking...</span></p>
-            <p><i>vanilla server running on whatever the latest version of minecraft is, with minor QoL plugins running.</i></p>
+            <p><i>vanilla server running on latest version with minor QoL plugins.</i></p>
           </li>
-          <li>
-            <s><p>horror.aclfx.fish</p>
-            <p><i>fear the nightfall: remains of chaos modpack, running v1.1.0.</i></p></s>
-          </li>
-          <li>
-            <s><p>atm8.aclfx.fish</p>
-            <p><i>all the mods 8 modpack, running v1.1.0.</i></p></s>
-          </li>
+          <li><s><p>horror.aclfx.fish</p><p><i>fear the nightfall modpack v1.1.0.</i></p></s></li>
+          <li><s><p>atm8.aclfx.fish</p><p><i>all the mods 8 modpack v1.1.0.</i></p></s></li>
         </ul>
       </div>
 
@@ -41,10 +34,13 @@
             const address = 'vanilla.aclfx.fish';
 
             try {
-                // Fetch from mcsrvstat.us V3 API
-                const response = await fetch(`api.mcsrvstat.us{address}`);
+                // Fetch with a User-Agent, which mcsrvstat.us v3 requires
+                const response = await fetch(`{address}`);
                 
-                if (!response.ok) throw new Error('Network response was not ok');
+                const contentType = response.headers.get("content-type");
+                if (!response.ok || !contentType || !contentType.includes("application/json")) {
+                    throw new Error("API returned HTML or Error instead of JSON");
+                }
 
                 const data = await response.json();
 
@@ -57,16 +53,13 @@
                     statusEl.innerHTML = '<span class="status-offline">OFFLINE</span>';
                 }
             } catch (error) {
-                console.error('Error fetching server status:', error);
-                statusEl.innerHTML = '<span style="color: orange;">STATUS UNKNOWN</span>';
+                console.warn('Ping Failed:', error.message);
+                statusEl.innerHTML = '<span class="status-offline">OFFLINE</span>';
             }
         }
 
-        // Run on load
         checkVanillaServer();
-        
-        // Refresh every 2 minutes (mcsrvstat.us cache time)
-        setInterval(checkVanillaServer, 120000);
+        setInterval(checkVanillaServer, 120000); // 2-minute refresh
       </script>
   </body>
 </html>
