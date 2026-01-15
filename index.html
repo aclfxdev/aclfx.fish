@@ -4,12 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>aclfx.fish directory</title>
+    <style>
+      .status-online { color: green; font-weight: bold; }
+      .status-offline { color: red; font-weight: bold; }
+    </style>
   </head>
   <body>
       <h1>list of servers:</h1>
       <ul>
         <li>
-          <p>vanilla.aclfx.fish</p>
+          <!-- Replace <address> with your actual vanilla IP if needed -->
+          <p>vanilla.aclfx.fish</p> 
           <p><i>vanilla server running on whatever the latest version of minecraft is, with minor QoL plugins running.</i></p>
         </li>
         <br>
@@ -19,11 +24,37 @@
         </li>
         <br>
         <li>
-          <s><p>atm8.aclfx.fish</p>
-          <p><i>all the mods 8 modpack, running v1.1.0.</i></p></s>
+          <p><strong>atm8.aclfx.fish</strong>: <span id="atm8-status">Loading...</span></p>
+          <p><i>all the mods 8 modpack, running v1.1.0.</i></p>
+          <p id="atm8-details" style="font-size: 0.9em; color: #555;"></p>
         </li>
       </ul>
+
+      <script>
+        async function fetchATM8Status() {
+            const statusElement = document.getElementById('atm8-status');
+            const detailsElement = document.getElementById('atm8-details');
+            
+            try {
+                // Fetching from mcstatus.io API for the ATM8 server
+                const response = await fetch('api.mcstatus.io');
+                const data = await response.json();
+
+                if (data.online) {
+                    statusElement.innerHTML = '<span class="status-online">ONLINE</span>';
+                    detailsElement.innerText = `Players: ${data.players.online} / ${data.players.max} | Version: ${data.version.name_clean}`;
+                } else {
+                    statusElement.innerHTML = '<span class="status-offline">OFFLINE</span>';
+                    detailsElement.innerText = 'The server is currently unreachable.';
+                }
+            } catch (error) {
+                statusElement.innerHTML = '<span class="status-offline">ERROR</span>';
+                console.error('Failed to fetch Minecraft server status:', error);
+            }
+        }
+
+        // Run the function when the page loads
+        fetchATM8Status();
+      </script>
   </body>
 </html>
-
-
