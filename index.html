@@ -5,35 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>aclfx.fish directory</title>
     <style>
-      .status-card { display: flex; align-items: center; gap: 15px; margin-top: 5px; }
-      .server-li { margin-bottom: 25px; list-style: none; }
-      .badge { height: 30px; }
+      body { font-family: sans-serif; line-height: 1.6; padding: 20px; }
+      .server-item { margin-bottom: 30px; list-style: none; }
+      .status-badge { display: block; margin-top: 10px; height: 35px; }
     </style>
   </head>
   <body>
       <h1>list of servers:</h1>
       <ul>
-        <li class="server-li">
-          <p><strong>vanilla.aclfx.fish</strong></p>
-          <div class="status-card">
-            <img src="api.mcstatus.io" class="badge" alt="Vanilla Status">
-          </div>
-          <p><i>vanilla server running on whatever the latest version of minecraft is.</i></p>
+        <li class="server-item">
+          <strong>vanilla.aclfx.fish</strong>
+          <p><i>vanilla server running on whatever the latest version of minecraft is, with minor QoL plugins running.</i></p>
+          
+          <!-- mcstatus.io Widget: Automatically shows Online/Offline & player count -->
+          <a href="" target="_blank">
+            <img 
+              src="api.mcstatus.io" 
+              alt="Minecraft Server Status" 
+              class="status-badge"
+            >
+          </a>
         </li>
 
-        <li class="server-li">
-          <s><p>horror.aclfx.fish</p>
-          <p><i>fear the nightfall: remains of chaos modpack, running v1.1.0.</i></p></s>
-        </li>
-
-        <li class="server-li">
-          <p><strong>atm8.aclfx.fish</strong></p>
-          <div class="status-card">
-            <!-- This live image updates automatically to show Online/Offline status -->
-            <img id="atm8-badge" src="api.mcstatus.io" class="badge" alt="ATM8 Status">
-          </div>
-          <p><i>all the mods 8 modpack, running v1.1.0.</i></p>
-        </li>
+        <!-- Modded servers removed per your request -->
       </ul>
   </body>
 </html>
