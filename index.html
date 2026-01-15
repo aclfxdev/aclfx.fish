@@ -5,67 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>aclfx.fish directory</title>
     <style>
-      .status-online { color: green; font-weight: bold; }
-      .status-offline { color: red; font-weight: bold; }
-      .status-error { color: orange; font-style: italic; }
+      .status-card { display: flex; align-items: center; gap: 15px; margin-top: 5px; }
+      .server-li { margin-bottom: 25px; list-style: none; }
+      .badge { height: 30px; }
     </style>
   </head>
   <body>
       <h1>list of servers:</h1>
       <ul>
-        <li>
-          <p>vanilla.aclfx.fish</p> 
-          <p><i>vanilla server running on latest version with QoL plugins.</i></p>
+        <li class="server-li">
+          <p><strong>vanilla.aclfx.fish</strong></p>
+          <div class="status-card">
+            <img src="api.mcstatus.io" class="badge" alt="Vanilla Status">
+          </div>
+          <p><i>vanilla server running on whatever the latest version of minecraft is.</i></p>
         </li>
-        <br>
-        <li>
+
+        <li class="server-li">
           <s><p>horror.aclfx.fish</p>
           <p><i>fear the nightfall: remains of chaos modpack, running v1.1.0.</i></p></s>
         </li>
-        <br>
-        <li>
-          <p><strong>atm8.aclfx.fish</strong>: <span id="atm8-status">Checking...</span></p>
+
+        <li class="server-li">
+          <p><strong>atm8.aclfx.fish</strong></p>
+          <div class="status-card">
+            <!-- This live image updates automatically to show Online/Offline status -->
+            <img id="atm8-badge" src="api.mcstatus.io" class="badge" alt="ATM8 Status">
+          </div>
           <p><i>all the mods 8 modpack, running v1.1.0.</i></p>
-          <p id="atm8-details" style="font-size: 0.9em; color: #555;"></p>
         </li>
       </ul>
-
-      <script>
-        async function fetchATM8Status() {
-            const statusElement = document.getElementById('atm8-status');
-            const detailsElement = document.getElementById('atm8-details');
-            
-            try {
-                const response = await fetch('api.mcstatus.io');
-                
-                // If the response is not "OK" (200), don't try to parse it as JSON
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                // Verify the content type is actually JSON before parsing
-                const contentType = response.headers.get("content-type");
-                if (!contentType || !contentType.includes("application/json")) {
-                    throw new TypeError("Oops, we didn't get JSON from the API!");
-                }
-
-                const data = await response.json();
-
-                if (data.online) {
-                    statusElement.innerHTML = '<span class="status-online">ONLINE</span>';
-                    detailsElement.innerText = `Players: ${data.players.online} / ${data.players.max} | Version: ${data.version.name_clean}`;
-                } else {
-                    statusElement.innerHTML = '<span class="status-offline">OFFLINE</span>';
-                    detailsElement.innerText = 'Server is reachable but the game process is down.';
-                }
-            } catch (error) {
-                console.error('Ping Error:', error);
-                statusElement.innerHTML = '<span class="status-error">API UNAVAILABLE</span>';
-                detailsElement.innerText = 'Could not retrieve status (check your ad-blocker).';
-            }
-        }
-
-        fetchATM8Status();
-      </script>
   </body>
 </html>
