@@ -5,61 +5,55 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>aclfx.fish directory</title>
     <style>
-      body { font-family: system-ui, sans-serif; line-height: 1.6; padding: 20px; background-color: #f4f4f4; }
-      .server-list { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); max-width: 600px; }
-      ul { list-style: none; padding: 0; }
-      li { margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #eee; }
-      .status-online { color: #2ecc71; font-weight: bold; }
-      .status-offline { color: #e74c3c; font-weight: bold; }
-      .player-count { font-size: 0.9em; color: #666; margin-left: 5px; }
-      s { color: #999; }
+      .status-online { color: green; font-weight: bold; }
+      .status-offline { color: red; font-weight: bold; }
     </style>
   </head>
   <body>
-      <div class="server-list">
-        <h1>list of servers:</h1>
-        <ul>
-          <li>
-            <p><strong>vanilla.aclfx.fish</strong>: <span id="vanilla-status">Checking...</span></p>
-            <p><i>vanilla server running on latest version with minor QoL plugins.</i></p>
-          </li>
-          <li><s><p>horror.aclfx.fish</p><p><i>fear the nightfall modpack v1.1.0.</i></p></s></li>
-          <li><s><p>atm8.aclfx.fish</p><p><i>all the mods 8 modpack v1.1.0.</i></p></s></li>
-        </ul>
-      </div>
+      <h1>list of servers:</h1>
+      <ul>
+        <li>
+          <p>vanilla.aclfx.fish</p> 
+          <p><i>vanilla server running on whatever the latest version of minecraft is, with minor QoL plugins running.</i></p>
+          <p id="vanilla-details" style="font-size: 0.9em; color: #555;"></p>
+        </li>
+        <br>
+        <li>
+          <s><p>horror.aclfx.fish</p>
+          <p><i>fear the nightfall: remains of chaos modpack, running v1.1.0.</i></p></s>
+        </li>
+        <br>
+        <li>
+          <p><strong>atm8.aclfx.fish</strong>: <span id="atm8-status">Loading...</span></p>
+          <p><i>all the mods 8 modpack, running v1.1.0.</i></p>
+        </li>
+      </ul>
 
       <script>
-        async function checkVanillaServer() {
-            const statusEl = document.getElementById('vanilla-status');
-            const address = 'vanilla.aclfx.fish';
-
+        async function fetchVanillaStatus() {
+            const statusElement = document.getElementById('vanilla-status');
+            const detailsElement = document.getElementById('vanilla-details');
+            
             try {
-                // Fetch with a User-Agent, which mcsrvstat.us v3 requires
-                const response = await fetch(`{address}`);
-                
-                const contentType = response.headers.get("content-type");
-                if (!response.ok || !contentType || !contentType.includes("application/json")) {
-                    throw new Error("API returned HTML or Error instead of JSON");
-                }
-
+                // Fetching from mcstatus.io API for the vanilla server
+                const response = await fetch('api.mcstatus.io');
                 const data = await response.json();
 
-                if (data.online === true) {
-                    statusEl.innerHTML = `
-                        <span class="status-online">ONLINE</span>
-                        <span class="player-count">(${data.players.online}/${data.players.max})</span>
-                    `;
+                if (data.online) {
+                    statusElement.innerHTML = '<span class="status-online">ONLINE</span>';
+                    detailsElement.innerText = `Players: ${data.players.online} / ${data.players.max} | Version: ${data.version.name_clean}`;
                 } else {
-                    statusEl.innerHTML = '<span class="status-offline">OFFLINE</span>';
+                    statusElement.innerHTML = '<span class="status-offline">OFFLINE</span>';
+                    detailsElement.innerText = 'The server is currently unreachable.';
                 }
             } catch (error) {
-                console.warn('Ping Failed:', error.message);
-                statusEl.innerHTML = '<span class="status-offline">OFFLINE</span>';
+                statusElement.innerHTML = '<span class="status-offline">ERROR</span>';
+                console.error('Failed to fetch Minecraft server status:', error);
             }
         }
 
-        checkVanillaServer();
-        setInterval(checkVanillaServer, 120000); // 2-minute refresh
+        // Run the function when the page loads
+        fetchVanillaStatus();
       </script>
   </body>
 </html>
