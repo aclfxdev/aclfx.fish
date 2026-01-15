@@ -34,39 +34,39 @@
       </ul>
 
       <script>
-        async function getStatus() {
-            const statusEl = document.getElementById('v-status');
-            const playerEl = document.getElementById('v-players');
-            const address = 'vanilla.aclfx.fish';
-
-            try {
-                // The address is added to the URL path here
-                const response = await fetch(`api.mcstatus.io{address}`);
-                
-                // Safety check: ensure the API returned JSON, not an HTML error page
-                const contentType = response.headers.get("content-type");
-                if (!response.ok || !contentType || !contentType.includes("application/json")) {
-                    throw new Error("API returned an error page");
-                }
-
-                const data = await response.json();
-
-                if (data.online) {
-                    statusEl.innerHTML = '<span class="status-online">ONLINE</span>';
-                    playerEl.innerText = `Players: ${data.players.online} / ${data.players.max} | Version: ${data.version.name_clean}`;
-                } else {
-                    statusEl.innerHTML = '<span class="status-offline">OFFLINE</span>';
-                    playerEl.innerText = 'The server is currently unreachable.';
-                }
-            } catch (error) {
-                console.warn('Ping Failed:', error.message);
-                statusEl.innerHTML = '<span class="status-offline">OFFLINE</span>';
-                playerEl.innerText = 'Status API is currently unavailable.';
-            }
+      async function getStatus() {
+        const statusEl = document.getElementById('v-status');
+        const playerEl = document.getElementById('v-players');
+        const address = 'vanilla.aclfx.fish';
+    
+        try {
+          const response = await fetch(`https://api.mcstatus.io/v2/status/java/${address}`);
+    
+          const contentType = response.headers.get("content-type");
+          if (!response.ok || !contentType || !contentType.includes("application/json")) {
+            throw new Error("API returned an error page");
+          }
+    
+          const data = await response.json();
+    
+          if (data.online) {
+            statusEl.innerHTML = '<span class="status-online">ONLINE</span>';
+            // Note: mcstatus.io uses 'name_clean' for version, but check if it exists
+            const version = data.version ? data.version.name_clean : 'Unknown';
+            playerEl.innerText = `Players: ${data.players.online} / ${data.players.max} | Version: ${version}`;
+          } else {
+            statusEl.innerHTML = '<span class="status-offline">OFFLINE</span>';
+            playerEl.innerText = 'The server is currently unreachable.';
+          }
+        } catch (error) {
+          console.warn('Ping Failed:', error.message);
+          statusEl.innerHTML = '<span class="status-offline">OFFLINE</span>';
+          playerEl.innerText = 'Status API is currently unavailable.';
         }
-
-        // Run the check immediately
-        getStatus();
-      </script>
+      }
+    
+      getStatus();
+    </script>
   </body>
 </html>
+
