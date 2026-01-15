@@ -16,49 +16,51 @@
       <ul>
         <li>
           <p><strong>vanilla.aclfx.fish</strong>: <span id="vanilla-status">Loading...</span></p> 
-          <p><i>vanilla server running on whatever the latest version of minecraft is, with minor QoL plugins running.</i></p>
+          <p><i>vanilla server running on the latest version with minor QoL plugins.</i></p>
           <p id="vanilla-details" style="font-size: 0.9em; color: #555;"></p>
         </li>
         <br>
-        <li>
-          <s><p>horror.aclfx.fish</p>
-          <p><i>fear the nightfall: remains of chaos modpack, running v1.1.0.</i></p></s>
-        </li>
+        <li><s><p>horror.aclfx.fish</p><p><i>fear the nightfall modpack, running v1.1.0.</i></p></s></li>
         <br>
-        <li>
-          <s><p>atm8.aclfx.fish</p>
-          <p><i>all the mods 8 modpack, running v1.1.0.</i></p></s>
-        </li>
+        <li><s><p>atm8.aclfx.fish</p><p><i>all the mods 8 modpack, running v1.1.0.</i></p></s></li>
       </ul>
 
       <script>
         async function fetchVanillaStatus() {
-            const statusElement = document.getElementById('vanilla-status');
-            const detailsElement = document.getElementById('vanilla-details');
+            const statusEl = document.getElementById('vanilla-status');
+            const detailsEl = document.getElementById('vanilla-details');
             
             try {
+                // Fetch from the JSON status endpoint
                 const response = await fetch('api.mcstatus.io');
                 
-                if (!response.ok) throw new Error('API Response Not OK');
-                
+                // 1. Check if the response is actually JSON
+                const contentType = response.headers.get("content-type");
+                if (!response.ok || !contentType || !contentType.includes("application/json")) {
+                    throw new Error("API returned HTML/Error instead of JSON");
+                }
+
                 const data = await response.json();
 
+                // 2. Update UI based on server state
                 if (data.online) {
-                    statusElement.innerHTML = '<span class="status-online">ONLINE</span>';
-                    detailsElement.innerText = `Players: ${data.players.online} / ${data.players.max} | Version: ${data.version.name_clean}`;
+                    statusEl.innerHTML = '<span class="status-online">ONLINE</span>';
+                    detailsEl.innerText = `Players: ${data.players.online} / ${data.players.max} | Version: ${data.version.name_clean}`;
                 } else {
-                    statusElement.innerHTML = '<span class="status-offline">OFFLINE</span>';
-                    detailsElement.innerText = 'The server is currently unreachable.';
+                    statusEl.innerHTML = '<span class="status-offline">OFFLINE</span>';
+                    detailsEl.innerText = 'Server is currently unreachable.';
                 }
             } catch (error) {
-                statusElement.innerHTML = '<span class="status-error">ERROR</span>';
-                detailsElement.innerText = 'Failed to load status. Check console for details.';
-                console.error('Failed to fetch Minecraft server status:', error);
+                // 3. Graceful fallback for the "Unexpected token <" error
+                console.warn('Status Check Failed:', error.message);
+                statusEl.innerHTML = '<span class="status-offline">OFFLINE</span>';
+                detailsEl.innerText = 'Unable to connect to status API.';
             }
         }
 
-        // Run the function when the page loads
         fetchVanillaStatus();
+        // Refresh every 60 seconds
+        setInterval(fetchVanillaStatus, 60000);
       </script>
   </body>
 </html>
