@@ -6,61 +6,39 @@
     <title>aclfx.fish directory</title>
     <style>
       body { font-family: sans-serif; padding: 20px; line-height: 1.6; }
-      .status-online { color: green; font-weight: bold; }
-      .status-offline { color: red; font-weight: bold; }
-      .status-error { color: orange; font-weight: bold; }
+      .server-container { margin-bottom: 30px; }
+      .status-widget { 
+        display: block; 
+        margin-top: 10px; 
+        max-width: 100%; 
+        height: auto;
+        border-radius: 4px;
+      }
+      s { color: #888; }
     </style>
   </head>
   <body>
       <h1>list of servers:</h1>
       <ul>
-        <li>
-          <p><strong>vanilla.aclfx.fish</strong>: <span id="vanilla-status">Loading...</span></p> 
-          <p><i>vanilla server running on the latest version with minor QoL plugins.</i></p>
-          <p id="vanilla-details" style="font-size: 0.9em; color: #555;"></p>
+        <li class="server-container">
+          <p><strong>vanilla.aclfx.fish</strong></p> 
+          <p><i>vanilla server running on whatever the latest version of minecraft is, with minor QoL plugins running.</i></p>
+          <img 
+            src="api.mcstatus.io" 
+            alt="Minecraft Server Status" 
+            class="status-widget"
+          >
         </li>
-        <br>
-        <li><s><p>horror.aclfx.fish</p><p><i>fear the nightfall modpack, running v1.1.0.</i></p></s></li>
-        <br>
-        <li><s><p>atm8.aclfx.fish</p><p><i>all the mods 8 modpack, running v1.1.0.</i></p></s></li>
+
+        <li class="server-container">
+          <s><p>horror.aclfx.fish</p>
+          <p><i>fear the nightfall: remains of chaos modpack, running v1.1.0.</i></p></s>
+        </li>
+
+        <li class="server-container">
+          <s><p>atm8.aclfx.fish</p>
+          <p><i>all the mods 8 modpack, running v1.1.0.</i></p></s>
+        </li>
       </ul>
-
-      <script>
-        async function fetchVanillaStatus() {
-            const statusEl = document.getElementById('vanilla-status');
-            const detailsEl = document.getElementById('vanilla-details');
-            
-            try {
-                // Fetch from the JSON status endpoint
-                const response = await fetch('api.mcstatus.io');
-                
-                // 1. Check if the response is actually JSON
-                const contentType = response.headers.get("content-type");
-                if (!response.ok || !contentType || !contentType.includes("application/json")) {
-                    throw new Error("API returned HTML/Error instead of JSON");
-                }
-
-                const data = await response.json();
-
-                // 2. Update UI based on server state
-                if (data.online) {
-                    statusEl.innerHTML = '<span class="status-online">ONLINE</span>';
-                    detailsEl.innerText = `Players: ${data.players.online} / ${data.players.max} | Version: ${data.version.name_clean}`;
-                } else {
-                    statusEl.innerHTML = '<span class="status-offline">OFFLINE</span>';
-                    detailsEl.innerText = 'Server is currently unreachable.';
-                }
-            } catch (error) {
-                // 3. Graceful fallback for the "Unexpected token <" error
-                console.warn('Status Check Failed:', error.message);
-                statusEl.innerHTML = '<span class="status-offline">OFFLINE</span>';
-                detailsEl.innerText = 'Unable to connect to status API.';
-            }
-        }
-
-        fetchVanillaStatus();
-        // Refresh every 60 seconds
-        setInterval(fetchVanillaStatus, 60000);
-      </script>
   </body>
 </html>
