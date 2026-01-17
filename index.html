@@ -10,6 +10,7 @@
         .status-online { color: green; font-weight: bold; }
         .status-offline { color: red; font-weight: bold; }
         .player-info { font-size: 0.9em; color: #555; }
+        .details { font-style: italic; color: #b8b8b8; }
         s { color: #888; }
     </style>
 </head>
@@ -48,7 +49,7 @@
                 const data = await response.json();
 
                 if (data.online) {
-                    statusEl.innerHTML = '<span class="status-online">ONLINE</span>';
+                    statusEl.innerHTML = `<span class="status-online">ONLINE</span><span class="details">&nbsp;&nbsp;${data.retrieved_at}</span>`;
                     statusEl.classList.add('status-online');
                     playerEl.innerText = `Players: ${data.players.online} / ${data.players.max} | Version: ${data.version?.name_clean || 'Modded'}`;
                 } else {
@@ -71,4 +72,5 @@
     </script>
 </body>
 </html>
+
 
