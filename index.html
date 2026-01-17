@@ -50,7 +50,7 @@
                 const data = await response.json();
 
                 if (data.online) {
-                    unixTime = ${data.retrieved_at};
+                    unixTime = data.retrieved_at;
                     var date = new Date(unix_timestamp * 1000);
                     var hours = date.getHours();
                     var minutes = "0" + date.getMinutes();
@@ -80,5 +80,6 @@
     </script>
 </body>
 </html>
+
 
 
