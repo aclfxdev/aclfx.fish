@@ -10,7 +10,7 @@
         .status-online { color: green; font-weight: bold; }
         .status-offline { color: red; font-weight: bold; }
         .player-info { font-size: 0.9em; color: #555; }
-        .details { font-style: italic; color: #b8b8b8; }
+        .timestamp { font-style: italic; color: #888; font-weight: normal; font-size: 0.85em; margin-left: 8px; }
         s { color: #888; }
     </style>
 </head>
@@ -36,11 +36,9 @@
     </ul>
 
     <script>
-        // A reusable function to fetch status for any server
         async function updateServerStatus(address, statusId, playerId) {
             const statusEl = document.getElementById(statusId);
             const playerEl = document.getElementById(playerId);
-            //const unixTime = 0;
 
             try {
                 const response = await fetch(`https://api.mcstatus.io/v2/status/java/${address}`);
@@ -48,21 +46,16 @@
                 if (!response.ok) throw new Error("API Error");
                 
                 const data = await response.json();
+                
+                // Get current time in HH:MM:SS format
+                const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                const timeSpan = `<span class="timestamp">as of ${time}</span>`;
 
                 if (data.online) {
-                    /*unixTime = data.retrieved_at;
-                    var date = new Date(unixTime * 1000);
-                    var hours = date.getHours();
-                    var minutes = "0" + date.getMinutes();
-                    var seconds = "0" + date.getSeconds();
-                    var formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);*/
-                    
-                    //statusEl.innerHTML = `<span class="status-online">ONLINE</span><span class="details">&nbsp;&nbsp;` + formattedTime + `</span>`;
-                    statusEl.innerHTML = `<span class="status-online">ONLINE</span>`;
-                    statusEl.classList.add('status-online');
+                    statusEl.innerHTML = `<span class="status-online">ONLINE</span> ${timeSpan}`;
                     playerEl.innerText = `Players: ${data.players.online} / ${data.players.max} | Version: ${data.version?.name_clean || 'Modded'}`;
                 } else {
-                    statusEl.innerHTML = '<span class="status-offline">OFFLINE</span>';
+                    statusEl.innerHTML = `<span class="status-offline">OFFLINE</span> ${timeSpan}`;
                     playerEl.innerText = 'Server is currently offline.';
                 }
             } catch (error) {
@@ -71,7 +64,6 @@
             }
         }
 
-        // Run for both servers
         function refreshAll() {
             updateServerStatus('vanilla.aclfx.fish', 'vanilla-status', 'vanilla-players');
             updateServerStatus('atm8.aclfx.fish', 'atm8-status', 'atm8-players');
@@ -81,9 +73,3 @@
     </script>
 </body>
 </html>
-
-
-
-
-
-
