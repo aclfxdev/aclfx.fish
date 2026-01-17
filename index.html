@@ -40,6 +40,7 @@
         async function updateServerStatus(address, statusId, playerId) {
             const statusEl = document.getElementById(statusId);
             const playerEl = document.getElementById(playerId);
+            const unixTime = 0;
 
             try {
                 const response = await fetch(`https://api.mcstatus.io/v2/status/java/${address}`);
@@ -49,7 +50,14 @@
                 const data = await response.json();
 
                 if (data.online) {
-                    statusEl.innerHTML = `<span class="status-online">ONLINE</span><span class="details">&nbsp;&nbsp;${data.retrieved_at}</span>`;
+                    unixTime = ${data.retrieved_at};
+                    var date = new Date(unix_timestamp * 1000);
+                    var hours = date.getHours();
+                    var minutes = "0" + date.getMinutes();
+                    var seconds = "0" + date.getSeconds();
+                    var formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
+                    
+                    statusEl.innerHTML = `<span class="status-online">ONLINE</span><span class="details">&nbsp;&nbsp;` + formattedTime + `</span>`;
                     statusEl.classList.add('status-online');
                     playerEl.innerText = `Players: ${data.players.online} / ${data.players.max} | Version: ${data.version?.name_clean || 'Modded'}`;
                 } else {
