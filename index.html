@@ -10,7 +10,7 @@
         .status-online { color: green; font-weight: bold; }
         .status-offline { color: red; font-weight: bold; }
         .player-info { font-size: 0.9em; color: #555; }
-        .timestamp { font-style: italic; color: #888; font-weight: normal; margin-left: 8px; }
+        .timestamp { font-style: italic; color: #888; font-weight: normal; font-size: 0.85em; margin-left: 8px; }
         s { color: #888; }
     </style>
 </head>
@@ -49,7 +49,7 @@
                 
                 // Get current time in HH:MM:SS format
                 const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                const timeSpan = `<span class="timestamp"> -- ${time}</span>`;
+                const timeSpan = `<span class="timestamp">-- ${time}</span>`;
 
                 if (data.online) {
                     statusEl.innerHTML = `<span class="status-online">ONLINE</span>${timeSpan}`;
@@ -73,4 +73,5 @@
     </script>
 </body>
 </html>
+
 
