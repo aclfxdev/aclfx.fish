@@ -33,6 +33,12 @@
             <s><p>horror.aclfx.fish</p>
             <p><i>fear the nightfall: remains of chaos modpack, running v1.1.0.</i></p></s>
         </li>
+
+        <li class="server-container">
+            <p><strong>mustypirate.aclfx.fish</strong>: <span id="mustypirate-status">Checking...</span></p>
+            <p id="mustypirate-players" class="player-info"></p>
+            <p><i>musty dusty crusty pirate server running who knows what.</i></p>
+        </li>
     </ul>
 
     <script>
@@ -67,12 +73,14 @@
         function refreshAll() {
             updateServerStatus('vanilla.aclfx.fish', 'vanilla-status', 'vanilla-players');
             updateServerStatus('atm8.aclfx.fish', 'atm8-status', 'atm8-players');
+            updateServerStatus('mustypirate.aclfx.fish', 'mustypirate-status', 'mustypirate-players');
         }
 
         refreshAll();
     </script>
 </body>
 </html>
+
 
 
 
