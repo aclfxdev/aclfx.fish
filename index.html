@@ -62,7 +62,7 @@
                     playerEl.innerText = `Players: ${data.players.online} / ${data.players.max} | Version: ${data.version?.name_clean || 'Modded'}`;
                 } else {
                     statusEl.innerHTML = `<span class="status-offline">OFFLINE</span> ${timeSpan}`;
-                    playerEl.innerText = 'Server is currently offline.';
+                    playerEl.innerText = 'Server is currently offline! If this is unexpected, please let the server operator know!';
                 }
             } catch (error) {
                 statusEl.innerHTML = '<span class="status-offline">ERROR</span>';
@@ -80,6 +80,7 @@
     </script>
 </body>
 </html>
+
 
 
 
